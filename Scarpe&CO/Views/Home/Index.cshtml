@@ -2,11 +2,13 @@
 
 @{
     ViewBag.Title = "Home Page";
+
+     
 }
 
 <main>
     <section class=" container">
-        <div class="row">
+        <div class="row g-3">
             @foreach (Scarpe_CO.Models.Prodotto P in Model)
             {
 
@@ -15,8 +17,8 @@
                         <img class="card-img-top" src="@P.ImmagineCopertina" alt="ImgScarpa">
                         <div class="card-body">
                             <h5 class="card-title">@P.Nome</h5>
-                            <p class="card-text">@P.Descrizione</p>
-                            @Html.ActionLink("Dettagli", "Dettagli", new { id = P.Id }, new { @class = "btn btn-info" })
+                            <p class="card-text">@P.Prezzo €</p>
+                            @Html.ActionLink("Dettagli", "Dettagli", "Prodotto", new { id = P.Id }, new { @class = "btn btn-info" })
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ namespace Scarpe_CO.Models
 
         public string Password { get; set; }
 
+        [ScaffoldColumn(false)]
         public bool Admin { get; set; }
 
         public Utente() { }
