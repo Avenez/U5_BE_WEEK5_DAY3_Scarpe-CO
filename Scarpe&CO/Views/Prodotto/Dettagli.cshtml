@@ -47,9 +47,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col d-flex flex-column" >
+                <div class="col d-flex flex-column">
                     <h4>Dettagli</h4>
                     <p>@Model.Descrizione</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @Html.ActionLink("Acquista", "AddToCart", "Prodotto", new { area = "" }, new { @class = "btn btn-dark" })
                 </div>
             </div>
         </div>

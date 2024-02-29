@@ -29,3 +29,10 @@ textarea {
 .borderPointer:hover {
   border: 2px solid black;
 }
+
+.hoverWhite {
+}
+
+    .hoverWhite:hover {
+        color: white;
+    }
