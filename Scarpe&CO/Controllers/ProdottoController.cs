@@ -21,6 +21,29 @@ namespace Scarpe_CO.Controllers
             return View();
         }
 
+
+        public ActionResult AddToCart(Prodotto P) {
+
+         List<Prodotto> Carrello = Session["Carrello"] as List<Prodotto>;
+
+            if (Carrello != null) {
+                foreach (Prodotto item in Carrello) {
+                    if (item.Id == P.Id)
+                    {
+                        item.Qta++;
+                    }
+                    else { 
+                    Carrello.Add(P);
+
+                    }
+                }
+
+            }
+
+            return View();
+        }
+
+
         [HttpGet]
         public ActionResult Dettagli(int id) 
         {
@@ -282,34 +305,73 @@ namespace Scarpe_CO.Controllers
 
 
         [HttpGet]
-        public ActionResult ChangeVisibility(Prodotto P)
+        public ActionResult ChangeVisibility(int id)
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    conn.Open();
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = conn;
-                    cmd.CommandText = "UPDATE Prodotti SET Disponibile = @Disponibile WHERE IdScarpa = @Id";
-                    cmd.Parameters.AddWithValue("@Disponibile", P.Disponibile ? 0 : 1); 
-                    cmd.Parameters.AddWithValue("@Id", P.Id);
+                    // Aggiorna la visibilità del prodotto
+                    // (se è visibile, lo rende invisibile e viceversa)
+                    string sql = "UPDATE Prodotti SET Disponibile = CASE WHEN Disponibile = 1 THEN 0 ELSE 1 END WHERE IdScarpa = @IDProdotto";
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@IDProdotto", id);
 
+                    conn.Open();
                     cmd.ExecuteNonQuery();
-                    return RedirectToAction("BackOffice", "Prodotto");
                 }
 
-                
-                
+                return RedirectToAction("BackOffice", "Prodotto");
             }
             catch (Exception ex)
             {
-               
-                Console.WriteLine("Errore durante l'aggiornamento del prodotto: " + ex.Message);
-                
-                return View("Error");
+                // Gestisce l'eccezione
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("BackOffice", "Prodotto");
             }
+
+            //try
+            //{
+            //    bool isVisible;
+
+            //    using (SqlConnection conn = new SqlConnection(connectionString))
+            //    {
+            //        conn.Open();
+
+
+            //        SqlCommand cmd = new SqlCommand($"SELECT Disponibile FROM Prodotti WHERE IdScarpa = @Id", conn);
+            //        cmd.Parameters.AddWithValue("@Id", id);
+
+            //        object result = cmd.ExecuteScalar();
+            //        if (result != null && result != DBNull.Value)
+            //        {
+            //            isVisible = (bool)result;
+            //        }
+            //        else
+            //        {
+
+            //            return RedirectToAction("NotFound", "Error");
+            //        }
+
+
+            //        SqlCommand updateCmd = new SqlCommand("UPDATE Prodotti SET Disponibile = @Disponibile WHERE IdScarpa = @Id", conn);
+            //        updateCmd.Parameters.AddWithValue("@Disponibile", !isVisible); 
+            //        updateCmd.Parameters.AddWithValue("@Id", id);
+
+            //        updateCmd.ExecuteNonQuery();
+            //    }
+
+            //    return RedirectToAction("BackOffice", "Prodotto");
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    Console.WriteLine("Errore durante l'aggiornamento del prodotto: " + ex.Message);
+
+            //    return View("Error");
+            //}
         }
+
 
         [HttpGet]
 

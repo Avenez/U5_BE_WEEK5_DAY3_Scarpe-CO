@@ -13,6 +13,8 @@ namespace Scarpe_CO.Models
         [ScaffoldColumn(false)]
         public int Id { get; set; }
 
+        [ScaffoldColumn(false)]
+        public int Qta { get; set; }
         public string Nome { get; set; }
         public string Prezzo { get; set; }
         public string Descrizione { get; set; }
@@ -48,6 +50,22 @@ namespace Scarpe_CO.Models
             ImmagineTre = immagineTre;
             Disponibile = disponibile;
         }
+
+        public Prodotto(int id, int qta , string nome, string prezzo, string descrizione, string immagineCopertina, string immagineDue, string immagineTre, bool disponibile)
+        {
+            Id = id;
+            Qta = qta;
+            Nome = nome;
+            Prezzo = prezzo;
+            Descrizione = descrizione;
+            ImmagineCopertina = immagineCopertina;
+            ImmagineDue = immagineDue;
+            ImmagineTre = immagineTre;
+            Disponibile = disponibile;
+        }
+
+
+
 
         public static void EditProdotto(Prodotto P, string queryString, bool boolImg1, bool boolImg2, bool boolImg3)
         {

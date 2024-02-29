@@ -44,6 +44,8 @@ namespace Scarpe_CO.Controllers
         [HttpPost]
         public ActionResult Login(Utente U) {
 
+
+
                 try
                 {
                     conn.Open();
@@ -66,8 +68,11 @@ namespace Scarpe_CO.Controllers
                         cookie.Values["admin"] = reader["Admin"].ToString();
                         cookie.Expires = DateTime.Now.AddDays(30);
                         Response.Cookies.Add(cookie);
+
                         Session["isLogged"] = true;
 
+                        List<Prodotto> Carrello = new List<Prodotto>();  
+                        Session["Carrello"] = Carrello;
 
                         return RedirectToAction("Index", "Home");
 
