@@ -1,4 +1,5 @@
-﻿using Scarpe_CO.Models;
+﻿using Microsoft.Ajax.Utilities;
+using Scarpe_CO.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,52 +17,62 @@ namespace Scarpe_CO.Controllers
         List<Prodotto> prodotti = new List<Prodotto>();
         public ActionResult Index()
         {
-            try
-            {
-                conn.Open();
 
+            if (Request.Cookies["LOGIN_COOKIE"] != null) {
 
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandText = "SELECT * FROM Prodotti WHERE Disponibile = 1";
-
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                Session["isLogged"] = true;
+                try
                 {
-                    int IdProdotto = int.Parse(reader["IdScarpa"].ToString());
-                    string Nome = reader["Nome"].ToString();
+                    conn.Open();
 
-                    string Prezzo = reader["Prezzo"].ToString();
-                    string[] Cifra;
-                    Cifra = Prezzo.ToString().Split(',');
-                    string Totale = Cifra[0] + "." + Cifra[1].Substring(0, 2);
 
-                    string Descrizione = reader["Destrizione"].ToString();
-                    string ImmagineCopertina = reader["ImmagineCopertina"].ToString();
-                    string ImmagineDue = reader["ImmagineDue"].ToString();
-                    string ImmagineTre = reader["ImmagineTre"].ToString();
-                    bool Disponibile = reader["Disponibile"].ToString() == "True" ? true : false;
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = conn;
+                    cmd.CommandText = "SELECT * FROM Prodotti WHERE Disponibile = 1";
 
-                    prodotti.Add(new Prodotto (IdProdotto, Nome, Totale, Descrizione, ImmagineCopertina, ImmagineDue, ImmagineTre, Disponibile));
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        int IdProdotto = int.Parse(reader["IdScarpa"].ToString());
+                        string Nome = reader["Nome"].ToString();
+
+                        string Prezzo = reader["Prezzo"].ToString();
+                        string[] Cifra;
+                        Cifra = Prezzo.ToString().Split(',');
+                        string Totale = Cifra[0] + "." + Cifra[1].Substring(0, 2);
+
+                        string Descrizione = reader["Descrizione"].ToString();
+                        string ImmagineCopertina = reader["ImmagineCopertina"].ToString();
+                        string ImmagineDue = reader["ImmagineDue"].ToString();
+                        string ImmagineTre = reader["ImmagineTre"].ToString();
+                        bool Disponibile = reader["Disponibile"].ToString() == "True" ? true : false;
+
+                        prodotti.Add(new Prodotto(IdProdotto, Nome, Totale, Descrizione, ImmagineCopertina, ImmagineDue, ImmagineTre, Disponibile));
+
+                    }
+                    reader.Close();
+
 
                 }
-                reader.Close();
+                catch (Exception ex)
+                {
+                    Response.Write("Errore");
+                    Response.Write(ex);
+                }
+                finally
+                {
+                    conn.Close();
+                }
 
 
-            }
-            catch (Exception ex)
+                return View(prodotti);
+            } 
+            else 
             {
-                Response.Write("Errore");
-                Response.Write(ex);
-            }
-            finally
-            {
-                conn.Close();
+                return RedirectToAction("Login", "Utente"); ;
             }
 
-
-            return View(prodotti);
         }
 
         public ActionResult About()

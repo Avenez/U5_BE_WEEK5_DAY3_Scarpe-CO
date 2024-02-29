@@ -26,7 +26,7 @@
                         <li>@Html.ActionLink("Informazioni", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         @if (Request.Cookies["LOGIN_COOKIE"]["admin"] == "True") 
                         {
-                        <li>@Html.ActionLink("Backoffice", "Backoffice", "Prodotto", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Backoffice", "BackOffice", "Prodotto", new { area = "" }, new { @class = "nav-link" })</li>
                         }
                         
                     </ul>

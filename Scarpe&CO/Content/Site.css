@@ -18,3 +18,14 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.cursorPointer {
+    cursor:pointer
+}
+
+.borderPointer {
+}
+
+.borderPointer:hover {
+  border: 2px solid black;
+}

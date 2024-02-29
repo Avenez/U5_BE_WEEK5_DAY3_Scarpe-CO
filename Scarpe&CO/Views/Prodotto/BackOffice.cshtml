@@ -1,0 +1,51 @@
+﻿@model List<Scarpe_CO.Models.Prodotto>
+@{
+    ViewBag.Title = "BeckOffice";
+}
+
+<h2>BeckOffice</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            @Html.ActionLink("AggiungiProdotto", "Edit", new { @class = "btn btn-danger mb-3" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="row border border-1 border-bottom">
+                <div class="col">COPERTINA</div>
+                <div class="col">ID</div>
+                <div class="col">NOME</div>
+                <div class="col">PREZZO</div>
+                <div class="col">DISPONIBILE</div>
+                <div class="col">CONTROLLI</div>
+
+            </div>
+            @foreach (Scarpe_CO.Models.Prodotto P in Model)
+            {
+                <div class="row border border-1 border-bottom">
+                    <div class="col"> <img class="img-thumbnail" src="@P.ImmagineCopertina" alt="CopertinaProdotto" /> </div>
+                    <div class="col mt-5">@P.Id</div>
+                    <div class="col mt-5">@P.Nome</div>
+                    <div class="col mt-5">@P.Prezzo €</div>
+                    <div class="col mt-5">@P.Disponibile</div>
+                    <div class="col mt-5">
+                        @Html.ActionLink("Edit", "Edit", new { id = P.Id }, new { @class = "btn btn-info" })
+                        @if (P.Disponibile == true)
+                        {
+                            @Html.ActionLink("Togli dalla Vetrina", "ChangeVisibility", new { id = P.Id }, new { @class = "btn btn-danger" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Metti in Vetrina", "ChangeVisibility", new { id = P.Id }, new { @class = "btn btn-success" })
+                        }
+
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
