@@ -190,7 +190,7 @@ namespace Scarpe_CO.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit([Bind(Exclude = "ImmagineCopertina, ImmagineDue, ImmagineTre")] Prodotto P, HttpPostedFileBase ImmagineCopertinaFile, HttpPostedFileBase ImmagineDueFile, HttpPostedFileBase ImmagineTreFile, int id)
+        public ActionResult Edit([Bind(Exclude = "ImmagineCopertina, ImmagineDue, ImmagineTre")] Prodotto P, HttpPostedFileBase ImmagineCopertinaFile, HttpPostedFileBase ImmagineDueFile, HttpPostedFileBase ImmagineTreFile)
         {
             string queryString ="";
             if (ModelState.IsValid)
@@ -280,8 +280,8 @@ namespace Scarpe_CO.Controllers
         }
 
 
-        
 
+        [HttpGet]
         public ActionResult ChangeVisibility(Prodotto P)
         {
             try
@@ -309,6 +309,138 @@ namespace Scarpe_CO.Controllers
                 
                 return View("Error");
             }
+        }
+
+        [HttpGet]
+
+        public ActionResult Create() { 
+        
+        return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult Create([Bind(Exclude = "ImmagineCopertina, ImmagineDue, ImmagineTre")] Prodotto P, HttpPostedFileBase ImmagineCopertinaFile, HttpPostedFileBase ImmagineDueFile, HttpPostedFileBase ImmagineTreFile) {
+
+            string queryString = "";
+            if (ModelState.IsValid)
+            {
+                // salvataggio dell'immagine copertina
+                if (ImmagineCopertinaFile != null && ImmagineCopertinaFile.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(ImmagineCopertinaFile.FileName);
+                    string filePath = Path.Combine(Server.MapPath("~/ImmaginiProdotto"), fileName);
+                    ImmagineCopertinaFile.SaveAs(filePath);
+                    P.ImmagineCopertina = "/ImmaginiProdotto/" + fileName; // Salva il percorso dell'immagine nel modello
+                }
+
+
+                // salvataggio dell'immagine due
+                if (ImmagineDueFile != null && ImmagineDueFile.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(ImmagineDueFile.FileName);
+                    string filePath = Path.Combine(Server.MapPath("~/ImmaginiProdotto/"), fileName);
+                    ImmagineDueFile.SaveAs(filePath);
+                    P.ImmagineDue = "/ImmaginiProdotto/" + fileName; // Salva il percorso dell'immagine nel modello
+                }
+
+
+                // salvataggio dell'immagine tre
+                if (ImmagineTreFile != null && ImmagineTreFile.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(ImmagineTreFile.FileName);
+                    string filePath = Path.Combine(Server.MapPath("~/ImmaginiProdotto"), fileName);
+                    ImmagineTreFile.SaveAs(filePath);
+                    P.ImmagineTre = "/ImmaginiProdotto/" + fileName; // Salva il percorso dell'immagine nel modello
+                }
+
+
+                try
+                {
+                    queryString = "INSERT INTO Prodotti (Nome, Prezzo, Descrizione, ";
+
+                    //colonne delle immagini solo se i file sono stati forniti
+                    if (ImmagineCopertinaFile != null && ImmagineCopertinaFile.ContentLength > 0)
+                        queryString += "ImmagineCopertina, ";
+
+                    if (ImmagineDueFile != null && ImmagineDueFile.ContentLength > 0)
+                        queryString += "ImmagineDue, ";
+
+                    if (ImmagineTreFile != null && ImmagineTreFile.ContentLength > 0)
+                        queryString += "ImmagineTre, ";
+
+                    queryString += "Disponibile) " +
+                                   "VALUES (@Nome, @Prezzo, @Descrizione, ";
+
+                    //valori dei parametri per le immagini solo se i file sono stati forniti
+                    if (ImmagineCopertinaFile != null && ImmagineCopertinaFile.ContentLength > 0)
+                    {
+                        queryString += "@ImmagineCopertina, ";
+                    }
+
+                    if (ImmagineDueFile != null && ImmagineDueFile.ContentLength > 0) { 
+                        queryString += "@ImmagineDue, ";
+                }
+
+                    if (ImmagineTreFile != null && ImmagineTreFile.ContentLength > 0)
+                    {
+                        queryString += "@ImmagineTre, ";
+                    }
+
+                    queryString += "@Disponibile)";
+
+                    SqlCommand cmd = new SqlCommand(queryString, conn);
+
+                    cmd.Parameters.AddWithValue("Nome", P.Nome);
+                    cmd.Parameters.AddWithValue("Prezzo", P.Prezzo);
+                    cmd.Parameters.AddWithValue("Descrizione", P.Descrizione);
+                    cmd.Parameters.AddWithValue("Disponibile", P.Disponibile);
+                   
+
+                    if (ImmagineCopertinaFile != null && ImmagineCopertinaFile.ContentLength > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@ImmagineCopertina", P.ImmagineCopertina);
+                    }
+
+                    // Aggiungi gli altri parametri per le immagini solo se i file corrispondenti sono stati forniti
+                    if (ImmagineDueFile != null && ImmagineDueFile.ContentLength > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@ImmagineDue", P.ImmagineDue);
+                    }
+
+                    if (ImmagineTreFile != null && ImmagineTreFile.ContentLength > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@ImmagineTre", P.ImmagineTre);
+                    }
+
+                    try 
+                    {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write(ex);
+                    }
+                    finally
+                    { 
+                    conn.Close();
+                    }
+
+                    
+
+                    //return View();
+                    return RedirectToAction("Index", "Home");
+
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Si è verificato un Errore durante la modifica dell'articolo");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -6,10 +6,8 @@
 <h2>BeckOffice</h2>
 
 <div class="container">
-    <div class="row">
-        <div class="col">
-            @Html.ActionLink("AggiungiProdotto", "Edit", new { @class = "btn btn-danger mb-3" })
-        </div>
+    <div class="col">
+        @Html.ActionLink("AggiungiProdotto", "Create", new { area = "" }, new { @class = "btn btn-danger mb-3" })
     </div>
     <div class="row">
         <div class="col">
@@ -21,6 +19,9 @@
                 <div class="col">DISPONIBILE</div>
                 <div class="col">CONTROLLI</div>
 
+            </div>
+            <div class="row">
+                
             </div>
             @foreach (Scarpe_CO.Models.Prodotto P in Model)
             {
