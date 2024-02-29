@@ -430,8 +430,8 @@ namespace Scarpe_CO.Controllers
 
                     
 
-                    //return View();
-                    return RedirectToAction("Index", "Home");
+                    
+                    return RedirectToAction("BackOffice", "Prodotto");
 
                 }
                 catch
@@ -440,7 +440,7 @@ namespace Scarpe_CO.Controllers
                 }
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("BackOffice", "Prodotto");
         }
     }
 }

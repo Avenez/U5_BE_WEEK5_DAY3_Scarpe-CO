@@ -22,6 +22,17 @@ namespace Scarpe_CO.Controllers
             return View();
         }
 
+        public ActionResult Logout() {
+            Session.Clear();
+            HttpCookie cookie = new HttpCookie("LOGIN_COOKIE");
+            cookie.Expires = DateTime.Now.AddDays(-1);
+
+            Response.Cookies.Add(cookie);
+        
+        
+        return RedirectToAction("Login", "Utente");
+        }
+
 
         [HttpGet]
         public ActionResult Login() {
@@ -53,6 +64,7 @@ namespace Scarpe_CO.Controllers
                         cookie.Values["nome"] = reader["Nome"].ToString();
                         cookie.Values["password"] = reader["Password"].ToString();
                         cookie.Values["admin"] = reader["Admin"].ToString();
+                        cookie.Expires = DateTime.Now.AddDays(30);
                         Response.Cookies.Add(cookie);
                         Session["isLogged"] = true;
 
